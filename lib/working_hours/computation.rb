@@ -56,7 +56,7 @@ module WorkingHours
         time = return_to_exact_working_time(time, config: config)
         # look at working ranges
         time_in_day = time.seconds_since_midnight
-        
+
         working_hours_for(time, config: config).reverse_each do |from, to|
           if time_in_day > from and time_in_day <= to
             # take all we can
@@ -81,7 +81,7 @@ module WorkingHours
         end
         # find first working range after time
         time_in_day = time.seconds_since_midnight
-        
+
         working_hours_for(time, config: config).each do |from, to|
           return time if time_in_day >= from and time_in_day < to
           return move_time_of_day(time, from) if from >= time_in_day
@@ -148,6 +148,13 @@ module WorkingHours
         config[:holiday_hours].include?(time.to_date)
     end
 
+    def half_day? time, config: nil
+      return false unless working_day?(time, config: config)
+      config ||= wh_config
+      time = in_config_zone(time, config: config)
+      config[:half_days][time.wday]
+    end
+
     def in_working_hours? time, config: nil
       config ||= wh_config
       time = in_config_zone(time, config: config)
@@ -169,9 +176,27 @@ module WorkingHours
         days = 0
         while from.to_date < to.to_date
           from += 1.day
-          days += 1 if working_day?(from, config: config)
+          if half_day?(from, config: config)
+            days += 0.5
+          elsif working_day?(from, config: config)
+            days += 1
+          end
         end
         days
+      end
+    end
+
+    def working_days_in range, config: nil
+      config ||= wh_config
+      range.reduce(0) do |days, day|
+        day = in_config_zone(day, config: config)
+        if half_day?(day, config: config)
+          days + 0.5
+        elsif working_day?(day, config: config)
+          days + 1
+        else
+          days
+        end
       end
     end
 
