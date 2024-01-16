@@ -393,7 +393,8 @@ describe WorkingHours::Config do
           :working_hours => [{}, {32400=>61200}, {32400=>61200}, {32400=>61200}, {32400=>61200}, {32400=>61200}, {}],
           :holiday_hours => {},
           :holidays => Set.new([]),
-          :time_zone => ActiveSupport::TimeZone['UTC']
+          :time_zone => ActiveSupport::TimeZone['UTC'],
+          :half_days => [false, false, false, false, false, false, false]
         })
     end
 
@@ -410,7 +411,8 @@ describe WorkingHours::Config do
         :working_hours => [{}, {73979 => 82799}, {}, {}, {}, {}, {}],
         :holiday_hours => {},
         :holidays => Set.new([]),
-        :time_zone => ActiveSupport::TimeZone['UTC']
+        :time_zone => ActiveSupport::TimeZone['UTC'],
+        :half_days => [false, false, false, false, false, false, false]
       })
     end
 
@@ -420,7 +422,8 @@ describe WorkingHours::Config do
         :working_hours => [{}, {72000 => 86399.999999}, {}, {}, {}, {}, {}],
         :holiday_hours => {},
         :holidays => Set.new([]),
-        :time_zone => ActiveSupport::TimeZone['UTC']
+        :time_zone => ActiveSupport::TimeZone['UTC'],
+        :half_days => [false, false, false, false, false, false, false]
       })
     end
 
